@@ -11,15 +11,15 @@ const resetEffect = () => {
   imgUploadPreview.className = '';
   imgUploadPreview.classList.add('effects__preview--none');
   sliderElementContainer.classList.add('hidden');
+  imgUploadPreview.style.filter = '';
 };
 
-const setFilter = (filter) => {
+let filter;
+
+const setFilter = (currentFilter) => {
+  filter = currentFilter;
   sliderElementContainer.classList.remove('hidden');
   sliderElement.noUiSlider.updateOptions(filter.options);
-  sliderElement.noUiSlider.on('update', (values, handle) => {
-    imgUploadPreview.style.filter = `${filter.style}(${values[handle]}${filter.unit})`;
-    sliderElementValue.value = values[handle];
-  });
 };
 
 noUiSlider.create(sliderElement, {
@@ -34,6 +34,14 @@ noUiSlider.create(sliderElement, {
 
 sliderElement.noUiSlider.on('update', () => {
   sliderElementValue.value = sliderElement.noUiSlider.get();
+});
+
+sliderElement.noUiSlider.on('update', (values, handle) => {
+  if (!filter){
+    return;
+  }
+  imgUploadPreview.style.filter = `${filter.style}(${values[handle]}${filter.unit})`;
+  sliderElementValue.value = values[handle];
 });
 
 specialElementsArray.forEach((element) => {
